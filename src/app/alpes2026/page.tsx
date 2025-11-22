@@ -101,7 +101,7 @@ export default function Alpes2026() {
                                 background: "#d4af37",
                                 borderColor: "#000000",
                                 glyphColor: "#000000",
-                            });
+                            } as any);
 
                             const marker = new google.maps.marker.AdvancedMarkerElement({
                                 position: { lat: location.lat, lng: location.lng },
