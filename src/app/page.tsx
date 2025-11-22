@@ -25,7 +25,7 @@ export default function Home() {
         {/* Weather Widget Section */}
         <section className="content-section" data-aos="fade-up">
           <h2 className="section-title">
-            <FaCloudSun className="mr-2" /> Condições Atuais - São Vicente
+            <FaCloudSun className="icon" /> Condições Atuais - São Vicente
           </h2>
           <WeatherWidget />
         </section>
@@ -33,12 +33,12 @@ export default function Home() {
         {/* Video Section */}
         <section className="content-section" data-aos="fade-up" data-aos-delay="100">
           <h2 className="section-title">
-            <FaVideo className="mr-2" /> Transmissão ao Vivo
+            <FaVideo className="icon" /> Transmissão ao Vivo
           </h2>
           <div className="video-container">
             <VideoPlayer src="https://camera.clubecvllp.com.br/cam1/index.m3u8" />
           </div>
-          <p className="text-sm text-gray-400 mt-2 text-center">
+          <p className="video-caption">
             * Transmissão ao vivo da rampa de voo livre.
           </p>
         </section>
@@ -46,9 +46,9 @@ export default function Home() {
         {/* About Section */}
         <section id="sobre" className="content-section" data-aos="fade-up" data-aos-delay="200">
           <h2 className="section-title">
-            <FaInfoCircle className="mr-2" /> Sobre o Bagomeu
+            <FaInfoCircle className="icon" /> Sobre o Bagomeu
           </h2>
-          <p className="text-center text-lg leading-relaxed text-[var(--text-dim)]">
+          <p className="about-text">
             Ao invés de só quererem ficar voando, vão trabalhar, <span className="golden-accent">cambada de vagabundos</span>,
             <span className="brown-accent">desocupados</span> e <span className="golden-accent">ordinários</span>!
           </p>
@@ -56,6 +56,52 @@ export default function Home() {
       </main>
 
       <Footer />
+
+      <style jsx>{`
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: var(--accent-gold);
+        }
+        /* Target the icon specifically if needed, or use global class */
+        :global(.icon) {
+            margin-right: 0.5rem;
+        }
+        
+        .video-caption {
+            font-size: 0.875rem;
+            color: #9ca3af; /* text-gray-400 */
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .about-text {
+            text-align: center;
+            font-size: 1.125rem;
+            line-height: 1.625;
+            color: var(--text-dim);
+        }
+
+        .golden-accent {
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+        
+        .brown-accent {
+            color: #d59563;
+            font-weight: bold;
+        }
+      `}</style>
     </>
   );
 }

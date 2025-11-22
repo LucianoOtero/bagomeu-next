@@ -36,10 +36,10 @@ export default function Header() {
           </li>
           <li className="dropdown">
             <div
-              className="dropdown-toggle flex items-center gap-1 cursor-pointer"
+              className="dropdown-toggle"
               onClick={toggleDropdown}
             >
-              Viagens <FaChevronDown size={12} />
+              Viagens <FaChevronDown size={12} style={{ marginLeft: '4px' }} />
             </div>
             <ul className={`dropdown-menu ${isDropdownOpen ? "block" : ""}`}>
               <li>
@@ -106,6 +106,9 @@ export default function Header() {
           padding: 0.5rem 1rem;
           border-radius: 6px;
           transition: var(--transition);
+          display: flex;
+          align-items: center;
+          cursor: pointer;
         }
 
         .nav-menu a:hover, .dropdown-toggle:hover {
