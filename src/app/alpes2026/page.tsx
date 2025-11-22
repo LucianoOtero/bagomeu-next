@@ -9,7 +9,8 @@ import { FaRoute, FaMapMarkedAlt, FaListUl } from "react-icons/fa";
 
 export default function Alpes2026() {
     const mapRef = useRef<HTMLDivElement>(null);
-    const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+    // Use 'any' for markers array to avoid TypeScript issues with AdvancedMarkerElement types if not fully updated
+    const markersRef = useRef<any[]>([]);
 
     useEffect(() => {
         AOS.init({
@@ -19,31 +20,30 @@ export default function Alpes2026() {
         });
     }, []);
 
-    const initMap = async () => {
-        console.log("initMap called (Async with Map ID)");
+    const initMap = () => {
+        console.log("initMap called (Sync with Advanced Markers)");
         if (!mapRef.current) {
             console.error("Map ref is null");
             return;
         }
 
-        try {
-            console.log("Importing libraries...");
-            // Import necessary libraries
-            const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-            const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-            const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes") as google.maps.RoutesLibrary;
+        if (typeof google === "undefined" || !google.maps) {
+            console.error("Google Maps API not loaded yet");
+            return;
+        }
 
-            console.log("Libraries imported. Creating map...");
-            const map = new Map(mapRef.current, {
+        try {
+            console.log("Creating map instance...");
+            const map = new google.maps.Map(mapRef.current, {
                 zoom: 6,
                 center: { lat: 45.6306, lng: 8.7281 },
                 mapId: "a70c3e6549f5f3877cc8a060", // User provided Map ID
-                mapTypeId: "roadmap",
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
                 disableDefaultUI: false,
             });
 
-            const directionsService = new DirectionsService();
-            const directionsRenderer = new DirectionsRenderer({
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
                 map: map,
                 polylineOptions: {
                     strokeColor: "#d4af37",
@@ -94,30 +94,53 @@ export default function Alpes2026() {
                     markersRef.current = [];
 
                     locations.forEach((location) => {
-                        // Create a PinElement for the label
-                        const pin = new PinElement({
-                            glyph: location.label,
-                            background: "#d4af37", // Gold color to match theme
-                            borderColor: "#000000",
-                            glyphColor: "#000000",
-                        });
+                        // Check if AdvancedMarkerElement is available
+                        if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                            const pin = new google.maps.marker.PinElement({
+                                glyph: location.label,
+                                background: "#d4af37",
+                                borderColor: "#000000",
+                                glyphColor: "#000000",
+                            });
 
-                        const marker = new AdvancedMarkerElement({
-                            position: { lat: location.lat, lng: location.lng },
-                            map: map,
-                            title: location.name,
-                            content: pin.element,
-                        });
+                            const marker = new google.maps.marker.AdvancedMarkerElement({
+                                position: { lat: location.lat, lng: location.lng },
+                                map: map,
+                                title: location.name,
+                                content: pin.element,
+                            });
+                            markersRef.current.push(marker);
 
-                        markersRef.current.push(marker);
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong></div>`,
+                            });
 
-                        const infoWindow = new google.maps.InfoWindow({
-                            content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong></div>`,
-                        });
+                            marker.addListener("click", () => {
+                                infoWindow.open(map, marker);
+                            });
+                        } else {
+                            // Fallback to legacy Marker if AdvancedMarkerElement is not loaded
+                            console.warn("AdvancedMarkerElement not found, falling back to legacy Marker");
+                            const marker = new google.maps.Marker({
+                                position: { lat: location.lat, lng: location.lng },
+                                map: map,
+                                title: location.name,
+                                label: {
+                                    text: location.label,
+                                    color: "black",
+                                    fontWeight: "bold",
+                                },
+                            });
+                            markersRef.current.push(marker);
 
-                        marker.addListener("click", () => {
-                            infoWindow.open(map, marker);
-                        });
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong></div>`,
+                            });
+
+                            marker.addListener("click", () => {
+                                infoWindow.open(map, marker);
+                            });
+                        }
                     });
 
                     const totalDistance = result.routes[0].legs.reduce((total, leg) => total + (leg.distance?.value || 0), 0) / 1000;
@@ -140,23 +163,24 @@ export default function Alpes2026() {
     const focusOnLocation = (index: number) => {
         if (markersRef.current[index]) {
             const marker = markersRef.current[index];
-            // AdvancedMarkerElement doesn't have getMap() in the same way, but we can access the map instance if we stored it,
-            // or just assume the map is valid since markers are on it.
-            // However, to center the map we need the map instance.
-            // We can get it from the marker.map property.
-            const map = marker.map as google.maps.Map;
+            // Handle both AdvancedMarkerElement (map property) and legacy Marker (getMap() method)
+            let map: google.maps.Map | null | undefined;
+            let position: google.maps.LatLng | google.maps.LatLngLiteral | null | undefined;
 
-            if (map) {
-                const position = marker.position as google.maps.LatLngLiteral;
-                if (position) {
-                    map.setCenter(position);
-                    map.setZoom(10);
-                    // Trigger click to open info window
-                    // For AdvancedMarkerElement, we need to trigger the event on the element itself or call the listener logic directly.
-                    // The simplest way is to simulate a click event on the marker instance if possible, 
-                    // but google.maps.event.trigger(marker, "click") works for AdvancedMarkerElement too.
-                    google.maps.event.trigger(marker, "click");
-                }
+            if ('map' in marker) {
+                // AdvancedMarkerElement
+                map = marker.map as google.maps.Map;
+                position = marker.position;
+            } else {
+                // Legacy Marker
+                map = marker.getMap();
+                position = marker.getPosition();
+            }
+
+            if (map && position) {
+                map.setCenter(position);
+                map.setZoom(10);
+                google.maps.event.trigger(marker, "click");
             }
         }
     };
@@ -164,8 +188,9 @@ export default function Alpes2026() {
     return (
         <>
             <Header />
+            {/* Added libraries=marker to load the marker library synchronously */}
             <Script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&loading=async&v=weekly"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&libraries=marker&v=weekly"
                 onLoad={() => initMap()}
             />
 
