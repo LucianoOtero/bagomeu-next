@@ -20,12 +20,12 @@ export default function Alpes2026() {
     }, []);
 
     const initMap = () => {
-        if (!mapRef.current || typeof google === "undefined") return;
+        if (!mapRef.current || typeof google === "undefined" || !google.maps) return;
 
         const map = new google.maps.Map(mapRef.current, {
             zoom: 6,
             center: { lat: 45.6306, lng: 8.7281 },
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeId: "roadmap" as google.maps.MapTypeId,
             styles: [
                 { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                 { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -145,7 +145,7 @@ export default function Alpes2026() {
         <>
             <Header />
             <Script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&loading=async&v=3.55"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA"
                 onLoad={() => initMap()}
             />
 
