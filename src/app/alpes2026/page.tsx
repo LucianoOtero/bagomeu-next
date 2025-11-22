@@ -97,7 +97,7 @@ export default function Alpes2026() {
                         // Check if AdvancedMarkerElement is available
                         if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
                             const pin = new google.maps.marker.PinElement({
-                                glyph: location.label,
+                                glyphText: location.label, // Updated from glyph to glyphText
                                 background: "#d4af37",
                                 borderColor: "#000000",
                                 glyphColor: "#000000",
