@@ -20,110 +20,128 @@ export default function Alpes2026() {
     }, []);
 
     const initMap = () => {
-        if (!mapRef.current || typeof google === "undefined" || !google.maps) return;
+        console.log("initMap called");
+        if (!mapRef.current) {
+            console.error("Map ref is null");
+            return;
+        }
+        if (typeof google === "undefined" || !google.maps) {
+            console.error("Google Maps API not loaded");
+            return;
+        }
 
-        const map = new google.maps.Map(mapRef.current, {
-            zoom: 6,
-            center: { lat: 45.6306, lng: 8.7281 },
-            mapTypeId: "roadmap" as google.maps.MapTypeId,
-            styles: [
-                { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
-                { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
-                { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#263c3f" }] },
-                { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#6b9a76" }] },
-                { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
-                { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
-                { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
-                { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }] },
-                { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }] },
-                { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }] },
-                { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
-                { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
-                { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] },
-            ],
-        });
+        try {
+            console.log("Creating map instance...");
+            const map = new google.maps.Map(mapRef.current, {
+                zoom: 6,
+                center: { lat: 45.6306, lng: 8.7281 },
+                mapTypeId: "roadmap" as google.maps.MapTypeId,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                    { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
+                    { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
+                    { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#263c3f" }] },
+                    { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#6b9a76" }] },
+                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
+                    { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
+                    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
+                    { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }] },
+                    { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }] },
+                    { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }] },
+                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
+                    { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
+                    { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] },
+                ],
+            });
+            console.log("Map instance created successfully");
 
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({
-            map: map,
-            polylineOptions: {
-                strokeColor: "#d4af37",
-                strokeWeight: 5,
-            },
-            suppressMarkers: true,
-        });
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                polylineOptions: {
+                    strokeColor: "#d4af37",
+                    strokeWeight: 5,
+                },
+                suppressMarkers: true,
+            });
 
-        const waypoints = [
-            { location: { lat: 46.2381, lng: 6.1089 }, stopover: true }, // Genebra
-            { location: { lat: 43.9517, lng: 6.5071 }, stopover: true }, // Saint-André
-            { location: { lat: 44.3335, lng: 5.7549 }, stopover: true }, // Laragne
-            { location: { lat: 46.7403, lng: 13.1716 }, stopover: true }, // Greifenburg
-            { location: { lat: 47.6719, lng: 12.4085 }, stopover: true }, // Kössen
-            { location: { lat: 47.5717, lng: 10.7498 }, stopover: true }, // Tegelberg
-            { location: { lat: 45.7936, lng: 11.7402 }, stopover: true }, // Bassano
-        ];
+            const waypoints = [
+                { location: { lat: 46.2381, lng: 6.1089 }, stopover: true }, // Genebra
+                { location: { lat: 43.9517, lng: 6.5071 }, stopover: true }, // Saint-André
+                { location: { lat: 44.3335, lng: 5.7549 }, stopover: true }, // Laragne
+                { location: { lat: 46.7403, lng: 13.1716 }, stopover: true }, // Greifenburg
+                { location: { lat: 47.6719, lng: 12.4085 }, stopover: true }, // Kössen
+                { location: { lat: 47.5717, lng: 10.7498 }, stopover: true }, // Tegelberg
+                { location: { lat: 45.7936, lng: 11.7402 }, stopover: true }, // Bassano
+            ];
 
-        const origin = { lat: 45.6306, lng: 8.7281 }; // Malpensa
-        const destination = { lat: 45.6306, lng: 8.7281 }; // Malpensa
+            const origin = { lat: 45.6306, lng: 8.7281 }; // Malpensa
+            const destination = { lat: 45.6306, lng: 8.7281 }; // Malpensa
 
-        const request = {
-            origin: origin,
-            destination: destination,
-            waypoints: waypoints,
-            optimizeWaypoints: true,
-            travelMode: google.maps.TravelMode.DRIVING,
-        };
+            const request = {
+                origin: origin,
+                destination: destination,
+                waypoints: waypoints,
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING,
+            };
 
-        directionsService.route(request, function (result, status) {
-            if (status === google.maps.DirectionsStatus.OK && result && result.routes && result.routes[0] && result.routes[0].legs) {
-                directionsRenderer.setDirections(result);
+            console.log("Requesting route...");
+            directionsService.route(request, function (result, status) {
+                console.log("Route status:", status);
+                if (status === google.maps.DirectionsStatus.OK && result && result.routes && result.routes[0] && result.routes[0].legs) {
+                    directionsRenderer.setDirections(result);
 
-                const locations = [
-                    { lat: 45.6306, lng: 8.7281, name: "Aeroporto Internacional de Milão Malpensa", label: "A" },
-                    { lat: 46.2381, lng: 6.1089, name: "Aeroporto Internacional de Genebra", label: "B" },
-                    { lat: 43.9517, lng: 6.5071, name: "Saint-André-les-Alpes", label: "C" },
-                    { lat: 44.3335, lng: 5.7549, name: "Laragne - Montagne de Chabre", label: "D" },
-                    { lat: 46.7403, lng: 13.1716, name: "Greifenburg - Emberger Alm", label: "E" },
-                    { lat: 47.6719, lng: 12.4085, name: "Kössen - Unterberghorn", label: "F" },
-                    { lat: 47.5717, lng: 10.7498, name: "Tegelberg - Füssen", label: "G" },
-                    { lat: 45.7936, lng: 11.7402, name: "Bassano - Monte Grappa", label: "H" },
-                ];
+                    const locations = [
+                        { lat: 45.6306, lng: 8.7281, name: "Aeroporto Internacional de Milão Malpensa", label: "A" },
+                        { lat: 46.2381, lng: 6.1089, name: "Aeroporto Internacional de Genebra", label: "B" },
+                        { lat: 43.9517, lng: 6.5071, name: "Saint-André-les-Alpes", label: "C" },
+                        { lat: 44.3335, lng: 5.7549, name: "Laragne - Montagne de Chabre", label: "D" },
+                        { lat: 46.7403, lng: 13.1716, name: "Greifenburg - Emberger Alm", label: "E" },
+                        { lat: 47.6719, lng: 12.4085, name: "Kössen - Unterberghorn", label: "F" },
+                        { lat: 47.5717, lng: 10.7498, name: "Tegelberg - Füssen", label: "G" },
+                        { lat: 45.7936, lng: 11.7402, name: "Bassano - Monte Grappa", label: "H" },
+                    ];
 
-                locations.forEach((location) => {
-                    const marker = new google.maps.Marker({
-                        position: { lat: location.lat, lng: location.lng },
-                        map: map,
-                        title: location.name,
-                        label: {
-                            text: location.label,
-                            color: "black",
-                            fontWeight: "bold",
-                        },
+                    locations.forEach((location) => {
+                        const marker = new google.maps.Marker({
+                            position: { lat: location.lat, lng: location.lng },
+                            map: map,
+                            title: location.name,
+                            label: {
+                                text: location.label,
+                                color: "black",
+                                fontWeight: "bold",
+                            },
+                        });
+                        markersRef.current.push(marker);
+
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong></div>`,
+                        });
+
+                        marker.addListener("click", () => {
+                            infoWindow.open(map, marker);
+                        });
                     });
-                    markersRef.current.push(marker);
 
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong></div>`,
-                    });
+                    const totalDistance = result.routes[0].legs.reduce((total, leg) => total + (leg.distance?.value || 0), 0) / 1000;
+                    const totalTime = Math.round(result.routes[0].legs.reduce((total, leg) => total + (leg.duration?.value || 0), 0) / 3600);
 
-                    marker.addListener("click", () => {
-                        infoWindow.open(map, marker);
-                    });
-                });
-
-                const totalDistance = result.routes[0].legs.reduce((total, leg) => total + (leg.distance?.value || 0), 0) / 1000;
-                const totalTime = Math.round(result.routes[0].legs.reduce((total, leg) => total + (leg.duration?.value || 0), 0) / 3600);
-
-                const infoDiv = document.getElementById("route-info");
-                if (infoDiv) {
-                    infoDiv.innerHTML = `<p><strong>Distância Total:</strong> ${totalDistance.toFixed(1)} km</p>
-                               <p><strong>Tempo Estimado (Dirigindo):</strong> ${totalTime} horas</p>`;
+                    const infoDiv = document.getElementById("route-info");
+                    if (infoDiv) {
+                        infoDiv.innerHTML = `<p><strong>Distância Total:</strong> ${totalDistance.toFixed(1)} km</p>
+                                   <p><strong>Tempo Estimado (Dirigindo):</strong> ${totalTime} horas</p>`;
+                    }
+                } else {
+                    console.error("Directions request failed:", status);
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error("Error initializing map:", error);
+        }
     };
 
     const focusOnLocation = (index: number) => {
@@ -145,7 +163,7 @@ export default function Alpes2026() {
         <>
             <Header />
             <Script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&loading=async&v=weekly"
                 onLoad={() => initMap()}
             />
 
