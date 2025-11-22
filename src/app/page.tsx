@@ -5,6 +5,7 @@ import AOS from "aos";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WeatherWidget from "@/components/WeatherWidget";
+import VideoPlayer from "@/components/VideoPlayer";
 import { FaCloudSun, FaVideo, FaInfoCircle } from "react-icons/fa";
 
 export default function Home() {
@@ -35,20 +36,10 @@ export default function Home() {
             <FaVideo className="mr-2" /> Transmissão ao Vivo
           </h2>
           <div className="video-container">
-            <video
-              id="video"
-              controls
-              autoPlay
-              muted
-              playsInline
-              src="https://camera.clubecvllp.com.br/cam1/index.m3u8" // Modern browsers might need HLS.js for m3u8, but Safari handles it natively. 
-            // For full compatibility we'd need a React HLS player, but keeping it simple for now as per original.
-            >
-              Seu navegador não suporta vídeo HTML5.
-            </video>
+            <VideoPlayer src="https://camera.clubecvllp.com.br/cam1/index.m3u8" />
           </div>
           <p className="text-sm text-gray-400 mt-2 text-center">
-            * Se o vídeo não carregar, pode ser necessário um navegador com suporte nativo a HLS (como Safari) ou uma extensão.
+            * Transmissão ao vivo da rampa de voo livre.
           </p>
         </section>
 
