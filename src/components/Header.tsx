@@ -270,7 +270,7 @@ export default function Header() {
           }
           
           .hero-navbar {
-            justify-content: flex-end; /* Align hamburger to right */
+            justify-content: center; /* Center hamburger menu */
             padding: 1rem;
           }
 
