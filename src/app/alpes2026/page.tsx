@@ -19,24 +19,29 @@ export default function Alpes2026() {
         });
     }, []);
 
-    const initMap = () => {
-        console.log("initMap called");
+    const initMap = async () => {
+        console.log("initMap called (Async pattern)");
         if (!mapRef.current) {
             console.error("Map ref is null");
             return;
         }
 
-        if (typeof google === "undefined" || !google.maps) {
-            console.error("Google Maps API not loaded yet");
-            return;
-        }
-
         try {
-            console.log("Creating map instance (Synchronous)...");
-            const map = new google.maps.Map(mapRef.current, {
+            // Wait for the Google Maps API to be available
+            // When using loading=async, we might need to wait for the global 'google' object
+            // But usually, the onLoad callback from next/script handles this timing.
+            // Using importLibrary is the modern way to ensure modules are loaded.
+
+            console.log("Importing libraries...");
+            const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+            const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes") as google.maps.RoutesLibrary;
+            const { Marker } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+            console.log("Libraries imported. Creating map...");
+            const map = new Map(mapRef.current, {
                 zoom: 6,
                 center: { lat: 45.6306, lng: 8.7281 },
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeId: "roadmap",
                 styles: [
                     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                     { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -57,8 +62,8 @@ export default function Alpes2026() {
                 ],
             });
 
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({
+            const directionsService = new DirectionsService();
+            const directionsRenderer = new DirectionsRenderer({
                 map: map,
                 polylineOptions: {
                     strokeColor: "#d4af37",
@@ -106,7 +111,7 @@ export default function Alpes2026() {
                     ];
 
                     locations.forEach((location) => {
-                        const marker = new google.maps.Marker({
+                        const marker = new Marker({
                             position: { lat: location.lat, lng: location.lng },
                             map: map,
                             title: location.name,
@@ -163,7 +168,7 @@ export default function Alpes2026() {
         <>
             <Header />
             <Script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&v=weekly"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&loading=async&v=weekly"
                 onLoad={() => initMap()}
             />
 
@@ -211,7 +216,6 @@ export default function Alpes2026() {
                                 <p className="mb-2">Conectando pontos icônicos para parapente nos Alpes.</p>
                                 <div id="route-info"></div>
                             </div>
-                            {/* Explicit inline styles for height and width */}
                             <div ref={mapRef} id="map" style={{ height: "600px", width: "100%", borderRadius: "12px" }}></div>
                         </div>
                     </div>
@@ -236,12 +240,7 @@ export default function Alpes2026() {
             align-items: center;
             color: var(--accent-gold);
         }
-        .section-description {
-            font-size: 1.125rem;
-            line-height: 1.75;
-            color: var(--text-dim);
-        }
-        .icon {
+        :global(.icon) {
             margin-right: 0.5rem;
         }
         .map-section {
@@ -319,6 +318,12 @@ export default function Alpes2026() {
             margin-bottom: 0.5rem;
             font-size: 1.25rem;
             font-weight: bold;
+        }
+        
+        .section-description {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-dim);
         }
 
         @media (max-width: 768px) {
