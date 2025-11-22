@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaWind, FaCompass, FaTemperatureHigh, FaCloud } from "react-icons/fa";
+import { FaWind, FaCompass, FaTemperatureHigh, FaCloud, FaTachometerAlt, FaMountain } from "react-icons/fa";
 
 interface WeatherData {
     temperature: number;
     windSpeed: number;
     windDirection: number;
     weatherCode: number;
+    pressure: number;
 }
 
 export default function WeatherWidget() {
@@ -16,9 +17,11 @@ export default function WeatherWidget() {
 
     useEffect(() => {
         async function fetchWeather() {
-            const lat = -23.9631;
-            const lon = -46.3919;
-            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=kmh`;
+            // Exact coordinates for São Vicente ramp
+            const lat = -23.965018;
+            const lon = -46.362682;
+            // Added surface_pressure to the API request
+            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code,surface_pressure&wind_speed_unit=kmh`;
 
             try {
                 const response = await fetch(apiUrl);
@@ -28,6 +31,7 @@ export default function WeatherWidget() {
                     windSpeed: data.current.wind_speed_10m,
                     windDirection: data.current.wind_direction_10m,
                     weatherCode: data.current.weather_code,
+                    pressure: data.current.surface_pressure,
                 });
             } catch (error) {
                 console.error("Error fetching weather:", error);
@@ -75,6 +79,16 @@ export default function WeatherWidget() {
                 <div className="weather-label">Temperatura</div>
             </div>
             <div className="weather-card">
+                <div className="weather-icon"><FaTachometerAlt /></div>
+                <div className="weather-value">{Math.round(weather.pressure)} hPa</div>
+                <div className="weather-label">Pressão</div>
+            </div>
+            <div className="weather-card">
+                <div className="weather-icon"><FaMountain /></div>
+                <div className="weather-value">180 m</div>
+                <div className="weather-label">Altitude</div>
+            </div>
+            <div className="weather-card">
                 <div className="weather-icon"><FaCloud /></div>
                 <div className="weather-value">{getWeatherDescription(weather.weatherCode)}</div>
                 <div className="weather-label">Condição</div>
@@ -83,7 +97,7 @@ export default function WeatherWidget() {
             <style jsx>{`
         .weather-widget {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
           gap: 1.5rem;
           margin-top: 1rem;
         }
@@ -94,10 +108,15 @@ export default function WeatherWidget() {
           text-align: center;
           border: 1px solid rgba(255, 255, 255, 0.05);
           transition: var(--transition);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
         .weather-card:hover {
           transform: translateY(-5px);
           border-color: var(--accent-gold);
+          background: rgba(212, 175, 55, 0.05);
         }
         .weather-icon {
           font-size: 2rem;
@@ -110,6 +129,7 @@ export default function WeatherWidget() {
           font-size: 1.5rem;
           font-weight: 700;
           color: var(--text-light);
+          margin-bottom: 0.25rem;
         }
         .weather-label {
           font-size: 0.8rem;
