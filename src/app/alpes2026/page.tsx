@@ -19,29 +19,24 @@ export default function Alpes2026() {
         });
     }, []);
 
-    const initMap = async () => {
-        console.log("initMap called (Async pattern)");
+    const initMap = () => {
+        console.log("initMap called (Synchronous)");
         if (!mapRef.current) {
             console.error("Map ref is null");
             return;
         }
 
+        if (typeof google === "undefined" || !google.maps) {
+            console.error("Google Maps API not loaded yet");
+            return;
+        }
+
         try {
-            // Wait for the Google Maps API to be available
-            // When using loading=async, we might need to wait for the global 'google' object
-            // But usually, the onLoad callback from next/script handles this timing.
-            // Using importLibrary is the modern way to ensure modules are loaded.
-
-            console.log("Importing libraries...");
-            const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-            const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes") as google.maps.RoutesLibrary;
-            const { Marker } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-
-            console.log("Libraries imported. Creating map...");
-            const map = new Map(mapRef.current, {
+            console.log("Creating map instance...");
+            const map = new google.maps.Map(mapRef.current, {
                 zoom: 6,
                 center: { lat: 45.6306, lng: 8.7281 },
-                mapTypeId: "roadmap",
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
                 styles: [
                     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                     { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -62,8 +57,8 @@ export default function Alpes2026() {
                 ],
             });
 
-            const directionsService = new DirectionsService();
-            const directionsRenderer = new DirectionsRenderer({
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
                 map: map,
                 polylineOptions: {
                     strokeColor: "#d4af37",
@@ -111,7 +106,7 @@ export default function Alpes2026() {
                     ];
 
                     locations.forEach((location) => {
-                        const marker = new Marker({
+                        const marker = new google.maps.Marker({
                             position: { lat: location.lat, lng: location.lng },
                             map: map,
                             title: location.name,
@@ -168,7 +163,7 @@ export default function Alpes2026() {
         <>
             <Header />
             <Script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&loading=async&v=weekly"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&v=weekly"
                 onLoad={() => initMap()}
             />
 
