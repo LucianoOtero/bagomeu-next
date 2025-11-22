@@ -254,8 +254,20 @@ export default function Header() {
 
         /* Responsive */
         @media (max-width: 768px) {
-          .hero-title { font-size: 2.5rem; }
-          .hero-logo { width: 100px; height: 100px; }
+          .hero-title { 
+            font-size: 2rem; /* Reduced from 2.5rem */
+            line-height: 1.1;
+          }
+          
+          .hero-subtitle {
+            font-size: 0.9rem; /* Reduced from 1.2rem */
+            padding: 0 1rem;
+          }
+
+          .hero-logo { 
+            width: 100px; 
+            height: 100px; 
+          }
           
           .hero-navbar {
             justify-content: flex-end; /* Align hamburger to right */
@@ -287,6 +299,7 @@ export default function Header() {
             margin-top: 0.5rem;
             width: 100%;
             box-shadow: none;
+            text-align: center; /* Center dropdown items on mobile */
           }
           
           .dropdown-menu::after { display: none; }

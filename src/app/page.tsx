@@ -101,6 +101,21 @@ export default function Home() {
             color: #d59563;
             font-weight: bold;
         }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 1.5rem;
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            :global(.icon) {
+                margin-right: 0;
+                margin-bottom: 0.25rem;
+            }
+        }
       `}</style>
     </>
   );
