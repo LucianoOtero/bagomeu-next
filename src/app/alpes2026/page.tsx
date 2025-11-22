@@ -26,7 +26,6 @@ export default function Alpes2026() {
             return;
         }
 
-        // Double check if google is defined
         if (typeof google === "undefined" || !google.maps) {
             console.error("Google Maps API not loaded yet");
             return;
@@ -34,11 +33,10 @@ export default function Alpes2026() {
 
         try {
             console.log("Creating map instance (Synchronous)...");
-            // Direct instantiation (works because we removed loading=async)
             const map = new google.maps.Map(mapRef.current, {
                 zoom: 6,
                 center: { lat: 45.6306, lng: 8.7281 },
-                mapTypeId: google.maps.MapTypeId.ROADMAP, // Back to enum if available, or string "roadmap"
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
                 styles: [
                     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                     { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -164,7 +162,6 @@ export default function Alpes2026() {
     return (
         <>
             <Header />
-            {/* Removed loading=async to force synchronous load and avoid 'not a constructor' error */}
             <Script
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iBI5SCLnJ4Aw-yUSs-NDG5AkMJwcVJA&v=weekly"
                 onLoad={() => initMap()}
@@ -173,21 +170,21 @@ export default function Alpes2026() {
             <main className="main-content">
                 <section className="content-section" data-aos="fade-up">
                     <h2 className="section-title">
-                        <FaRoute className="mr-2" /> Roteiro de Viagem
+                        <FaRoute className="mr-2 icon" /> Roteiro de Viagem
                     </h2>
-                    <p className="text-lg leading-relaxed text-[var(--text-dim)]">
+                    <p className="section-description">
                         Explore o trajeto de carro pelos Alpes Europeus, começando e terminando no Aeroporto Internacional de Milão Malpensa (Itália).
                     </p>
                 </section>
 
                 <section className="content-section" data-aos="fade-up" data-aos-delay="100">
                     <h2 className="section-title">
-                        <FaMapMarkedAlt className="mr-2" /> Pontos do Trajeto
+                        <FaMapMarkedAlt className="mr-2 icon" /> Pontos do Trajeto
                     </h2>
                     <div className="map-section">
                         <div className="sidebar">
                             <h3>
-                                <FaListUl className="inline mr-2" /> Paradas
+                                <FaListUl className="inline mr-2 icon" /> Paradas
                             </h3>
                             <ul>
                                 {[
@@ -208,13 +205,14 @@ export default function Alpes2026() {
                             </ul>
                         </div>
 
-                        <div className="map-container-wrapper w-full">
-                            <div id="info" className="mb-4 p-4 bg-[rgba(42,107,255,0.1)] border-l-4 border-[#2A6BFF] rounded">
-                                <h3 className="text-[#2A6BFF] mb-2 text-xl font-bold">Resumo</h3>
+                        <div className="map-container-wrapper">
+                            <div id="info" className="info-box">
+                                <h3 className="info-title">Resumo</h3>
                                 <p className="mb-2">Conectando pontos icônicos para parapente nos Alpes.</p>
                                 <div id="route-info"></div>
                             </div>
-                            <div ref={mapRef} id="map" className="h-[600px] w-full rounded-xl shadow-lg"></div>
+                            {/* Explicit inline styles for height and width */}
+                            <div ref={mapRef} id="map" style={{ height: "600px", width: "100%", borderRadius: "12px" }}></div>
                         </div>
                     </div>
                 </section>
@@ -223,6 +221,29 @@ export default function Alpes2026() {
             <Footer />
 
             <style jsx>{`
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: var(--accent-gold);
+        }
+        .section-description {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-dim);
+        }
+        .icon {
+            margin-right: 0.5rem;
+        }
         .map-section {
           display: grid;
           grid-template-columns: 300px 1fr;
@@ -282,12 +303,30 @@ export default function Alpes2026() {
           left: 10px;
         }
 
+        .map-container-wrapper {
+            width: 100%;
+        }
+
+        .info-box {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(42, 107, 255, 0.1);
+            border-left: 4px solid #2A6BFF;
+            border-radius: 0.25rem;
+        }
+        .info-title {
+            color: #2A6BFF;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
           .map-section {
             grid-template-columns: 1fr;
           }
           #map {
-            height: 400px;
+            height: 400px !important;
           }
         }
       `}</style>
