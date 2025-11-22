@@ -19,23 +19,31 @@ export default function Alpes2026() {
         });
     }, []);
 
-    const initMap = () => {
+    const initMap = async () => {
         console.log("initMap called");
         if (!mapRef.current) {
             console.error("Map ref is null");
             return;
         }
-        if (typeof google === "undefined" || !google.maps) {
-            console.error("Google Maps API not loaded");
+
+        // Wait for google to be defined
+        if (typeof google === "undefined") {
+            console.error("Google is undefined");
             return;
         }
 
         try {
-            console.log("Creating map instance...");
-            const map = new google.maps.Map(mapRef.current, {
+            console.log("Importing libraries...");
+            // Use modern importLibrary for async loading
+            const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+            const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes") as google.maps.RoutesLibrary;
+            const { Marker } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+            console.log("Libraries imported. Creating map...");
+            const map = new Map(mapRef.current, {
                 zoom: 6,
                 center: { lat: 45.6306, lng: 8.7281 },
-                mapTypeId: "roadmap" as google.maps.MapTypeId,
+                mapTypeId: "roadmap", // String literal is safer
                 styles: [
                     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                     { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -55,10 +63,9 @@ export default function Alpes2026() {
                     { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] },
                 ],
             });
-            console.log("Map instance created successfully");
 
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({
+            const directionsService = new DirectionsService();
+            const directionsRenderer = new DirectionsRenderer({
                 map: map,
                 polylineOptions: {
                     strokeColor: "#d4af37",
@@ -106,7 +113,7 @@ export default function Alpes2026() {
                     ];
 
                     locations.forEach((location) => {
-                        const marker = new google.maps.Marker({
+                        const marker = new Marker({
                             position: { lat: location.lat, lng: location.lng },
                             map: map,
                             title: location.name,
