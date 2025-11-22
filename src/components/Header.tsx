@@ -28,10 +28,10 @@ export default function Header() {
         <div className="logo-container">
           <Link href="/">
             <Image
-              src="/Flying Donkeys.png"
+              src="/logo-new.png"
               alt="Flying Donkeys Logo"
-              width={150}
-              height={150}
+              width={200}
+              height={200}
               className="hero-logo"
               priority
             />
