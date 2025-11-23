@@ -142,28 +142,50 @@ export default function Alpes2026() {
                     });
 
                     // Alternative Locations (Blue Markers)
+                    // Alternative Locations (Blue Markers)
                     const alternativeLocations = [
-                        { lat: 45.782167, lng: 10.817833, name: "Pouso Monte Baldo - Malcesine", label: "P1" },
-                        { lat: 46.4766, lng: 11.7435, name: "Pouso Col Rodella - Campitello", label: "P2" },
-                        { lat: 46.686409, lng: 7.859877, name: "Pouso Interlaken - Höhematte", label: "P3" },
-                        { lat: 45.780833, lng: 6.221944, name: "Pouso Annecy - Doussard", label: "P4" },
-                        { lat: 45.848611, lng: 6.214167, name: "Pouso Annecy - Perroix", label: "P5" },
+                        { lat: 45.782167, lng: 10.817833, name: "Pouso Monte Baldo - Malcesine", label: "Garda" },
+                        { lat: 46.4766, lng: 11.7435, name: "Pouso Col Rodella - Campitello", label: "Dolomitas" },
+                        { lat: 46.686409, lng: 7.859877, name: "Pouso Interlaken - Höhematte", label: "Interlaken" },
+                        { lat: 45.780833, lng: 6.221944, name: "Pouso Annecy - Doussard", label: "Annecy" },
                     ];
 
                     alternativeLocations.forEach((location) => {
                         if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                            // Create a container for Pin + Label
+                            const container = document.createElement("div");
+                            container.style.display = "flex";
+                            container.style.alignItems = "center";
+                            container.style.gap = "5px";
+                            container.style.cursor = "pointer";
+
                             const pin = new google.maps.marker.PinElement({
-                                glyphText: location.label,
+                                glyph: "", // No text inside the pin
                                 background: "#2A6BFF", // Blue
                                 borderColor: "#000000",
                                 glyphColor: "#FFFFFF",
+                                scale: 0.8,
                             } as any);
+
+                            const labelSpan = document.createElement("span");
+                            labelSpan.textContent = location.label;
+                            labelSpan.style.color = "#2A6BFF";
+                            labelSpan.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+                            labelSpan.style.padding = "2px 6px";
+                            labelSpan.style.borderRadius = "4px";
+                            labelSpan.style.fontSize = "12px";
+                            labelSpan.style.fontWeight = "bold";
+                            labelSpan.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+                            labelSpan.style.border = "1px solid #2A6BFF";
+
+                            container.appendChild(pin.element);
+                            container.appendChild(labelSpan);
 
                             const marker = new google.maps.marker.AdvancedMarkerElement({
                                 position: { lat: location.lat, lng: location.lng },
                                 map: map,
                                 title: location.name,
-                                content: pin.element,
+                                content: container,
                             });
                             markersRef.current.push(marker);
 
@@ -175,12 +197,13 @@ export default function Alpes2026() {
                                 infoWindow.open(map, marker);
                             });
                         } else {
+                            // Fallback for legacy marker (no side label support easily, just standard marker)
                             const marker = new google.maps.Marker({
                                 position: { lat: location.lat, lng: location.lng },
                                 map: map,
                                 title: location.name,
                                 label: {
-                                    text: location.label,
+                                    text: location.label[0], // Just first letter for legacy
                                     color: "white",
                                     fontWeight: "bold",
                                 },
