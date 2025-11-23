@@ -205,15 +205,16 @@ export default function Header() {
           padding: 0.5rem;
           margin-top: 1rem;
           z-index: 1001;
+          text-align: center; /* Center text */
         }
 
         .dropdown-menu::before {
           content: '';
           position: absolute;
-          top: -0.5rem;
+          top: -1.5rem; /* Increased coverage */
           left: 0;
           width: 100%;
-          height: 1rem; /* Bridge gap */
+          height: 2rem; /* Increased bridge height */
           background: transparent;
         }
         
