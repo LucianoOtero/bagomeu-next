@@ -141,6 +141,70 @@ export default function Alpes2026() {
                         }
                     });
 
+                    // Alternative Locations (Blue Markers)
+                    const alternativeLocations = [
+                        { lat: 45.782167, lng: 10.817833, name: "Pouso Monte Baldo - Malcesine", label: "P1" },
+                        { lat: 46.4766, lng: 11.7435, name: "Pouso Col Rodella - Campitello", label: "P2" },
+                        { lat: 46.686409, lng: 7.859877, name: "Pouso Interlaken - Höhematte", label: "P3" },
+                        { lat: 45.780833, lng: 6.221944, name: "Pouso Annecy - Doussard", label: "P4" },
+                        { lat: 45.848611, lng: 6.214167, name: "Pouso Annecy - Perroix", label: "P5" },
+                    ];
+
+                    alternativeLocations.forEach((location) => {
+                        if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                            const pin = new google.maps.marker.PinElement({
+                                glyphText: location.label,
+                                background: "#2A6BFF", // Blue
+                                borderColor: "#000000",
+                                glyphColor: "#FFFFFF",
+                            } as any);
+
+                            const marker = new google.maps.marker.AdvancedMarkerElement({
+                                position: { lat: location.lat, lng: location.lng },
+                                map: map,
+                                title: location.name,
+                                content: pin.element,
+                            });
+                            markersRef.current.push(marker);
+
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong><br/><span style="color: #2A6BFF;">Pouso Alternativo</span></div>`,
+                            });
+
+                            marker.addListener("click", () => {
+                                infoWindow.open(map, marker);
+                            });
+                        } else {
+                            const marker = new google.maps.Marker({
+                                position: { lat: location.lat, lng: location.lng },
+                                map: map,
+                                title: location.name,
+                                label: {
+                                    text: location.label,
+                                    color: "white",
+                                    fontWeight: "bold",
+                                },
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    scale: 10,
+                                    fillColor: "#2A6BFF",
+                                    fillOpacity: 1,
+                                    strokeWeight: 1,
+                                    strokeColor: "white",
+                                },
+                            });
+                            markersRef.current.push(marker);
+
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `<div style="color: black; padding: 5px;"><strong>${location.name}</strong><br/><span style="color: #2A6BFF;">Pouso Alternativo</span></div>`,
+                            });
+
+                            marker.addListener("click", () => {
+                                infoWindow.open(map, marker);
+                            });
+                        }
+                    });
+
                     const totalDistance = result.routes[0].legs.reduce((total, leg) => total + (leg.distance?.value || 0), 0) / 1000;
                     const totalTime = Math.round(result.routes[0].legs.reduce((total, leg) => total + (leg.duration?.value || 0), 0) / 3600);
 
