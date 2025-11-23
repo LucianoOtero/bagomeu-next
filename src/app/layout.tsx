@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Bagomeu - Vai dar vôo em São Vicente hoje?",
   description: "Site oficial do Bagomeu - Parapente e Voo Livre",
+  icons: {
+    icon: "/icon.png",
+  },
+  themeColor: "#141414",
 };
 
 export default function RootLayout({

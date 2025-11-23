@@ -21,7 +21,7 @@ export default function Alpes2026() {
     }, []);
 
     const initMap = () => {
-        console.log("initMap called (Sync with Advanced Markers)");
+        console.log("initMap called - Route Update v2");
         if (!mapRef.current) {
             console.error("Map ref is null");
             return;
@@ -53,13 +53,12 @@ export default function Alpes2026() {
             });
 
             const waypoints = [
-                { location: { lat: 46.2381, lng: 6.1089 }, stopover: true }, // Genebra
-                { location: { lat: 43.9517, lng: 6.5071 }, stopover: true }, // Saint-André
-                { location: { lat: 44.3335, lng: 5.7549 }, stopover: true }, // Laragne
+                { location: { lat: 45.7936, lng: 11.7402 }, stopover: true }, // Bassano
                 { location: { lat: 46.7403, lng: 13.1716 }, stopover: true }, // Greifenburg
                 { location: { lat: 47.6719, lng: 12.4085 }, stopover: true }, // Kössen
                 { location: { lat: 47.5717, lng: 10.7498 }, stopover: true }, // Tegelberg
-                { location: { lat: 45.7936, lng: 11.7402 }, stopover: true }, // Bassano
+                { location: { lat: 44.3335, lng: 5.7549 }, stopover: true }, // Laragne
+                { location: { lat: 43.9517, lng: 6.5071 }, stopover: true }, // Saint-André
             ];
 
             const origin = { lat: 45.6306, lng: 8.7281 }; // Malpensa
@@ -81,13 +80,12 @@ export default function Alpes2026() {
 
                     const locations = [
                         { lat: 45.6306, lng: 8.7281, name: "Aeroporto Internacional de Milão Malpensa", label: "A" },
-                        { lat: 46.2381, lng: 6.1089, name: "Aeroporto Internacional de Genebra", label: "B" },
-                        { lat: 43.9517, lng: 6.5071, name: "Saint-André-les-Alpes", label: "C" },
-                        { lat: 44.3335, lng: 5.7549, name: "Laragne - Montagne de Chabre", label: "D" },
-                        { lat: 46.7403, lng: 13.1716, name: "Greifenburg - Emberger Alm", label: "E" },
-                        { lat: 47.6719, lng: 12.4085, name: "Kössen - Unterberghorn", label: "F" },
-                        { lat: 47.5717, lng: 10.7498, name: "Tegelberg - Füssen", label: "G" },
-                        { lat: 45.7936, lng: 11.7402, name: "Bassano - Monte Grappa", label: "H" },
+                        { lat: 45.7936, lng: 11.7402, name: "Bassano - Monte Grappa", label: "B" },
+                        { lat: 46.7403, lng: 13.1716, name: "Greifenburg - Emberger Alm", label: "C" },
+                        { lat: 47.6719, lng: 12.4085, name: "Kössen - Unterberghorn", label: "D" },
+                        { lat: 47.5717, lng: 10.7498, name: "Tegelberg - Füssen", label: "E" },
+                        { lat: 44.3335, lng: 5.7549, name: "Laragne - Montagne de Chabre", label: "F" },
+                        { lat: 43.9517, lng: 6.5071, name: "Saint-André-les-Alpes", label: "G" },
                     ];
 
                     // Clear existing markers
@@ -216,16 +214,15 @@ export default function Alpes2026() {
                             <ul>
                                 {[
                                     { label: "A", name: "Aeroporto Internacional de Milão Malpensa" },
-                                    { label: "B", name: "Aeroporto Internacional de Genebra" },
-                                    { label: "C", name: "Saint-André-les-Alpes" },
-                                    { label: "D", name: "Laragne - Montagne de Chabre" },
-                                    { label: "E", name: "Greifenburg - Emberger Alm" },
-                                    { label: "F", name: "Kössen - Unterberghorn" },
-                                    { label: "G", name: "Tegelberg - Füssen" },
-                                    { label: "H", name: "Bassano - Monte Grappa" },
-                                    { label: "I", name: "Aeroporto Internacional de Milão Malpensa" },
+                                    { label: "B", name: "Bassano - Monte Grappa" },
+                                    { label: "C", name: "Greifenburg - Emberger Alm" },
+                                    { label: "D", name: "Kössen - Unterberghorn" },
+                                    { label: "E", name: "Tegelberg - Füssen" },
+                                    { label: "F", name: "Laragne - Montagne de Chabre" },
+                                    { label: "G", name: "Saint-André-les-Alpes" },
+                                    { label: "A", name: "Aeroporto Internacional de Milão Malpensa" },
                                 ].map((stop, index) => (
-                                    <li key={index} data-label={stop.label} onClick={() => focusOnLocation(index)}>
+                                    <li key={index} data-label={stop.label} onClick={() => focusOnLocation(index === 7 ? 0 : index)}>
                                         {stop.name}
                                     </li>
                                 ))}
