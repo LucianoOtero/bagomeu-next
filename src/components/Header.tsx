@@ -217,6 +217,11 @@ export default function Header() {
           height: 2rem; /* Increased bridge height */
           background: transparent;
         }
+
+        .dropdown-menu a {
+          justify-content: center;
+          width: 100%;
+        }
         
         /* Triangle pointer for dropdown */
         .dropdown-menu::after {
