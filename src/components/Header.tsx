@@ -288,6 +288,7 @@ export default function Header() {
             gap: 1.5rem;
             border-bottom: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
+            z-index: 1002;
           }
 
           .nav-menu.active { display: flex; }
